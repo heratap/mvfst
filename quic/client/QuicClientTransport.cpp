@@ -979,7 +979,7 @@ void QuicClientTransport::onDataAvailable(
   auto packetReceiveTime = Clock::now();
   Buf data = std::move(readBuffer_);
 
-  if (params.gro <= 0) {
+  if (params.gro_ <= 0) {
     if (truncated) {
       // This is an error, drop the packet.
       QUIC_STATS(
@@ -1006,7 +1006,7 @@ void QuicClientTransport::onDataAvailable(
     // AsyncUDPSocket::handleRead() sets the len to be the
     // buffer size in case the data is truncated
     if (truncated) {
-      auto delta = len % params.gro;
+      auto delta = len % params.gro_;
       len -= delta;
 
       QUIC_STATS(
@@ -1022,21 +1022,21 @@ void QuicClientTransport::onDataAvailable(
 
     NetworkData networkData;
     networkData.receiveTimePoint = packetReceiveTime;
-    networkData.packets.reserve((len + params.gro - 1) / params.gro);
+    networkData.packets.reserve((len + params.gro_ - 1) / params.gro_);
     size_t remaining = len;
     size_t offset = 0;
     while (remaining) {
-      if (static_cast<int>(remaining) > params.gro) {
+      if (static_cast<int>(remaining) > params.gro_) {
         auto tmp = data->cloneOne();
         // start at offset
         tmp->trimStart(offset);
         // the actual len is len - offset now
-        // leave params.gro bytes
-        tmp->trimEnd(len - offset - params.gro);
-        DCHECK_EQ(tmp->length(), params.gro);
+        // leave params.gro_ bytes
+        tmp->trimEnd(len - offset - params.gro_);
+        DCHECK_EQ(tmp->length(), params.gro_);
 
-        offset += params.gro;
-        remaining -= params.gro;
+        offset += params.gro_;
+        remaining -= params.gro_;
         networkData.packets.emplace_back(std::move(tmp));
       } else {
         // do not clone the last packet
