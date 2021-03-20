@@ -80,7 +80,7 @@ void CCP::onRemoveBytesFromInflight(uint64_t bytes) {
 }
 
 void CCP::onPacketSent(const OutstandingPacket& packet) {
-  addAndCheckOverflow(bytesInFlight_, packet.encodedSize);
+  addAndCheckOverflow(bytesInFlight_, packet.metadata.encodedSize);
   addAndCheckOverflow(packetsInFlight_, 1);
 
   if (conn_.qLogger) {
