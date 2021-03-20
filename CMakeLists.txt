@@ -47,7 +47,7 @@ find_package(Threads)
 
 if(DEFINED CCP_ENABLED)
     find_package(libccp REQUIRED)
-    set(LIBCCP_LIBRARY libccp::ccp_static)
+    set(LIBCCP_LIBRARY libccp::ccp)
     # mvfst implementation of ccp is guarded with ifdef CCP_ENABLED
     add_compile_definitions(CCP_ENABLED=${CCP_ENABLED})
     # libccp header files include extern c if __CPLUSPLUS__ is defined
